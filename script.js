@@ -1,7 +1,7 @@
 // ======================================
 // HORIZON V3
 // ======================================
-
+alert("script loaded");
 const gamesContainer = document.getElementById("gamesContainer");
 const featuredContainer = document.getElementById("featuredGames");
 const favoritesContainer = document.getElementById("favoritesContainer");
