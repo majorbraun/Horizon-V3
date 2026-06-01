@@ -1,74 +1,57 @@
 [
   {
-    "name": "Slope",
-    "category": "Arcade",
-    "thumbnail": "https://picsum.photos/400/250?random=1",
-    "url": "https://example.com"
-  },
-  {
-    "name": "Retro Racer",
-    "category": "Racing",
-    "thumbnail": "https://picsum.photos/400/250?random=2",
-    "url": "https://example.com"
-  },
-  {
-    "name": "Pixel Adventure",
-    "category": "Adventure",
-    "thumbnail": "https://picsum.photos/400/250?random=3",
-    "url": "https://example.com"
-  },
-  {
-    "name": "Block Builder",
-    "category": "Sandbox",
-    "thumbnail": "https://picsum.photos/400/250?random=4",
-    "url": "https://example.com"
-  },
-  {
-    "name": "Galaxy Defender",
-    "category": "Shooter",
-    "thumbnail": "https://picsum.photos/400/250?random=5",
-    "url": "https://example.com"
-  },
-  {
-    "name": "Speed Drift",
-    "category": "Racing",
-    "thumbnail": "https://picsum.photos/400/250?random=6",
-    "url": "https://example.com"
-  },
-  {
-    "name": "Chess Master",
-    "category": "Strategy",
-    "thumbnail": "https://picsum.photos/400/250?random=7",
-    "url": "https://example.com"
-  },
-  {
-    "name": "Sky Jump",
-    "category": "Arcade",
-    "thumbnail": "https://picsum.photos/400/250?random=8",
-    "url": "https://example.com"
-  },
-  {
-    "name": "Dungeon Quest",
-    "category": "RPG",
-    "thumbnail": "https://picsum.photos/400/250?random=9",
-    "url": "https://example.com"
-  },
-  {
-    "name": "Ultimate Soccer",
+    "name": "Retro Bowl",
     "category": "Sports",
-    "thumbnail": "https://picsum.photos/400/250?random=10",
-    "url": "https://example.com"
+    "url": "https://retrofootball.io/retro-bowl-26"
   },
   {
-    "name": "Basketball Stars",
-    "category": "Sports",
-    "thumbnail": "https://picsum.photos/400/250?random=11",
-    "url": "https://example.com"
+    "name": "Vex6",
+    "category": "Platformer",
+    "url": "https://vex6.io/#google_vignette"
   },
   {
-    "name": "Zombie Survival",
-    "category": "Action",
-    "thumbnail": "https://picsum.photos/400/250?random=12",
-    "url": "https://example.com"
+    "name": "Friday Night Funkin'",
+    "category": "Rhythm",
+    "url": "https://fnf-2.io/"
+  },
+  {
+    "name": "Friday Night Funkin' - VS Whitty",
+    "category": "FNF Mod",
+    "url": "https://kbhgames.com/game/friday-night-funkin-v-s-whitty-full-week"
+  },
+  {
+    "name": "Friday Night Funkin' - VS Tricky",
+    "category": "FNF Mod",
+    "url": "https://kbhgames.com/game/friday-night-funkin-vs-tricky-full-week-remixes"
+  },
+  {
+    "name": "Friday Night Funkin' - VS Garcello",
+    "category": "FNF Mod",
+    "url": "https://kbhgames.com/game/fnf-vs-garcello-packwatched"
+  },
+  {
+    "name": "Friday Night Funkin' - Mid-Fight Masses",
+    "category": "FNF Mod",
+    "url": "https://kbhgames.com/game/fnf-mid-fight-masses-repented"
+  },
+  {
+    "name": "Friday Night Funkin' - VS Hex",
+    "category": "FNF Mod",
+    "url": "https://kbhgames.com/game/fnf-vs-hex-reanimated-with-lyrics"
+  },
+  {
+    "name": "Friday Night Funkin' - VS Shaggy",
+    "category": "FNF Mod",
+    "url": "https://kbhgames.com/game/fnf-vs-shaggy-x-matt-but-only-4-keys"
+  },
+  {
+    "name": "Friday Night Funkin' - Indie Cross",
+    "category": "FNF Mod",
+    "url": "https://kbhgames.com/game/friday-night-funkin-vs-indie-cross"
+  },
+  {
+    "name": "Friday Night Funkin' - Hotline 024",
+    "category": "FNF Mod",
+    "url": "https://kbhgames.com/game/friday-night-funkin-vs-indie-cross#google_vignette"
   }
 ]
