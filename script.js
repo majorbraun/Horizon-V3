@@ -1,532 +1,447 @@
-/* ======================================
-   HORIZON
-====================================== */
+// ======================================
+// HORIZON V3
+// ======================================
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+const gamesContainer = document.getElementById("gamesContainer");
+const featuredContainer = document.getElementById("featuredGames");
+const favoritesContainer = document.getElementById("favoritesContainer");
+const recentContainer = document.getElementById("recentContainer");
+const categoriesContainer = document.getElementById("categories");
+const searchInput = document.getElementById("search");
 
-:root{
+const gameFrame = document.getElementById("gameFrame");
+const playerOverlay = document.getElementById("playerOverlay");
 
-    --bg:#08111f;
-    --panel:#111827;
-    --card:#172033;
+let games = [];
 
-    --text:#ffffff;
-    --accent:#4da3ff;
+let favorites =
+JSON.parse(localStorage.getItem("favorites")) || [];
 
-    --border:
-    rgba(255,255,255,.08);
+let recent =
+JSON.parse(localStorage.getItem("recent")) || [];
 
-}
+// ======================================
+// LOAD GAMES
+// ======================================
 
-/* ======================================
-   LIGHT MODE
-====================================== */
+async function loadGames() {
 
-body.light{
+    try {
 
-    --bg:#f1f5f9;
-    --panel:#ffffff;
-    --card:#e2e8f0;
+        const response = await fetch("games.json");
 
-    --text:#111827;
-    --accent:#2563eb;
+        games = await response.json();
 
-    --border:
-    rgba(0,0,0,.08);
+        renderGames(games);
+        renderFeatured();
+        buildCategories();
+        renderFavorites();
+        renderRecent();
 
-}
+    } catch (error) {
 
-/* ======================================
-   BODY
-====================================== */
+        console.error("Failed to load games:", error);
 
-body{
-
-    background:var(--bg);
-
-    color:var(--text);
-
-    font-family:
-    Inter,
-    Arial,
-    sans-serif;
-
-    min-height:100vh;
-
-    display:flex;
+    }
 
 }
 
-/* ======================================
-   SIDEBAR
-====================================== */
+loadGames();
 
-.sidebar{
+// ======================================
+// CREATE GAME CARD
+// ======================================
 
-    width:240px;
+function createGameCard(game) {
 
-    min-height:100vh;
+    const card = document.createElement("div");
 
-    padding:25px;
+    card.className = "game-card";
 
-    background:
-    rgba(255,255,255,.03);
+    card.innerHTML = `
+        <div class="game-info">
 
-    backdrop-filter:
-    blur(20px);
+            <h4>${game.name}</h4>
 
-    border-right:
-    1px solid var(--border);
+            <div class="game-category">
+                ${game.category}
+            </div>
 
-}
+            <div class="card-actions">
 
-.logo{
+                <button class="play-btn">
+                    Play
+                </button>
 
-    margin-bottom:30px;
+                <button class="favorite-btn">
+                    ★
+                </button>
 
-}
+            </div>
 
-.logo h1{
+        </div>
+    `;
 
-    color:var(--accent);
+    card.querySelector(".play-btn")
+        .addEventListener("click", (e) => {
 
-    font-size:30px;
+            e.stopPropagation();
 
-    letter-spacing:2px;
+            launchGame(game);
 
-}
+        });
 
-/* ======================================
-   NAVIGATION
-====================================== */
+    card.querySelector(".favorite-btn")
+        .addEventListener("click", (e) => {
 
-.nav-btn{
+            e.stopPropagation();
 
-    width:100%;
+            toggleFavorite(game);
 
-    margin-bottom:10px;
+        });
 
-    border:none;
+    card.addEventListener("click", () => {
 
-    padding:14px;
+        launchGame(game);
 
-    cursor:pointer;
+    });
 
-    border-radius:14px;
-
-    background:var(--panel);
-
-    color:var(--text);
-
-    transition:.25s;
-
-}
-
-.nav-btn:hover{
-
-    transform:
-    translateY(-2px);
+    return card;
 
 }
 
-.nav-btn.active{
+// ======================================
+// RENDER GAMES
+// ======================================
 
-    background:
-    var(--accent);
+function renderGames(list) {
 
-    color:white;
+    if (!gamesContainer) return;
 
-}
+    gamesContainer.innerHTML = "";
 
-/* ======================================
-   MAIN
-====================================== */
+    list.forEach(game => {
 
-main{
+        gamesContainer.appendChild(
+            createGameCard(game)
+        );
 
-    flex:1;
-
-    padding:30px;
-
-}
-
-/* ======================================
-   HEADER
-====================================== */
-
-header{
-
-    margin-bottom:30px;
+    });
 
 }
 
-#search{
+// ======================================
+// FEATURED
+// ======================================
 
-    width:100%;
+function renderFeatured() {
 
-    padding:16px;
+    if (!featuredContainer) return;
 
-    border:none;
+    featuredContainer.innerHTML = "";
 
-    border-radius:14px;
+    games.slice(0, 4).forEach(game => {
 
-    background:
-    var(--panel);
+        featuredContainer.appendChild(
+            createGameCard(game)
+        );
 
-    color:var(--text);
-
-    font-size:16px;
-
-}
-
-/* ======================================
-   PAGE SYSTEM
-====================================== */
-
-.page{
-
-    display:none;
+    });
 
 }
 
-.active-page{
+// ======================================
+// FAVORITES
+// ======================================
 
-    display:block;
+function toggleFavorite(game) {
 
-}
+    const exists = favorites.find(
+        g => g.name === game.name
+    );
 
-/* ======================================
-   SECTION TITLES
-====================================== */
+    if (exists) {
 
-h2{
+        favorites = favorites.filter(
+            g => g.name !== game.name
+        );
 
-    margin-bottom:20px;
+    } else {
 
-}
+        favorites.push(game);
 
-h3{
+    }
 
-    margin-bottom:15px;
+    localStorage.setItem(
+        "favorites",
+        JSON.stringify(favorites)
+    );
 
-}
-
-/* ======================================
-   CATEGORIES
-====================================== */
-
-#categories{
-
-    display:flex;
-
-    flex-wrap:wrap;
-
-    gap:10px;
-
-    margin-bottom:25px;
+    renderFavorites();
 
 }
 
-.category-btn{
+function renderFavorites() {
 
-    border:none;
+    if (!favoritesContainer) return;
 
-    padding:10px 16px;
+    favoritesContainer.innerHTML = "";
 
-    border-radius:999px;
+    favorites.forEach(game => {
 
-    background:
-    var(--panel);
+        favoritesContainer.appendChild(
+            createGameCard(game)
+        );
 
-    color:var(--text);
-
-    cursor:pointer;
-
-    transition:.2s;
+    });
 
 }
 
-.category-btn:hover{
+// ======================================
+// RECENT
+// ======================================
 
-    background:
-    var(--accent);
+function addRecent(game) {
 
-    color:white;
+    recent = recent.filter(
+        g => g.name !== game.name
+    );
+
+    recent.unshift(game);
+
+    recent = recent.slice(0, 15);
+
+    localStorage.setItem(
+        "recent",
+        JSON.stringify(recent)
+    );
+
+    renderRecent();
 
 }
 
-/* ======================================
-   GAME GRID
-====================================== */
+function renderRecent() {
 
-.games-grid,
-.featured-grid{
+    if (!recentContainer) return;
 
-    display:grid;
+    recentContainer.innerHTML = "";
 
-    grid-template-columns:
-    repeat(
-        auto-fill,
-        minmax(
-            250px,
-            1fr
+    recent.forEach(game => {
+
+        recentContainer.appendChild(
+            createGameCard(game)
+        );
+
+    });
+
+}
+
+// ======================================
+// GAME PLAYER
+// ======================================
+
+function launchGame(game) {
+
+    if (!game.url) return;
+
+    gameFrame.src = game.url;
+
+    playerOverlay.style.display = "block";
+
+    addRecent(game);
+
+}
+
+// ======================================
+// CLOSE BUTTON
+// ======================================
+
+const closeBtn =
+document.getElementById("closePlayer");
+
+if (closeBtn) {
+
+    closeBtn.addEventListener("click", () => {
+
+        playerOverlay.style.display = "none";
+
+        gameFrame.src = "";
+
+    });
+
+}
+
+// ======================================
+// FULLSCREEN
+// ======================================
+
+const fullscreenBtn =
+document.getElementById("fullscreenBtn");
+
+if (fullscreenBtn) {
+
+    fullscreenBtn.addEventListener("click", () => {
+
+        if (gameFrame.requestFullscreen) {
+
+            gameFrame.requestFullscreen();
+
+        }
+
+    });
+
+}
+
+// ======================================
+// SEARCH
+// ======================================
+
+if (searchInput) {
+
+    searchInput.addEventListener("input", () => {
+
+        const value =
+        searchInput.value.toLowerCase();
+
+        const filtered =
+        games.filter(game =>
+
+            game.name
+            .toLowerCase()
+            .includes(value)
+
+        );
+
+        renderGames(filtered);
+
+    });
+
+}
+
+// ======================================
+// CATEGORIES
+// ======================================
+
+function buildCategories() {
+
+    if (!categoriesContainer) return;
+
+    categoriesContainer.innerHTML = "";
+
+    const allBtn =
+    document.createElement("button");
+
+    allBtn.className =
+    "category-btn";
+
+    allBtn.textContent =
+    "All";
+
+    allBtn.onclick =
+    () => renderGames(games);
+
+    categoriesContainer.appendChild(
+        allBtn
+    );
+
+    const categories =
+    [...new Set(
+
+        games.map(
+            game => game.category
         )
-    );
 
-    gap:20px;
+    )];
 
-}
+    categories.forEach(category => {
 
-/* ======================================
-   GAME CARD
-====================================== */
+        const btn =
+        document.createElement("button");
 
-.game-card{
+        btn.className =
+        "category-btn";
 
-    background:
-    var(--card);
+        btn.textContent =
+        category;
 
-    border:
-    1px solid var(--border);
+        btn.onclick =
+        () => {
 
-    border-radius:20px;
+            renderGames(
 
-    transition:.25s;
+                games.filter(
 
-    cursor:pointer;
+                    game =>
+                    game.category === category
 
-    min-height:150px;
+                )
 
-}
+            );
 
-.game-card:hover{
+        };
 
-    transform:
-    translateY(-5px);
+        categoriesContainer.appendChild(
+            btn
+        );
 
-}
-
-.game-info{
-
-    padding:20px;
+    });
 
 }
 
-.game-info h4{
+// ======================================
+// PAGE NAVIGATION
+// ======================================
 
-    font-size:18px;
+document
+.querySelectorAll(".nav-btn")
+.forEach(btn => {
 
-    margin-bottom:10px;
+    btn.addEventListener("click", () => {
 
-}
+        document
+        .querySelectorAll(".nav-btn")
+        .forEach(nav => {
 
-.game-category{
+            nav.classList.remove(
+                "active"
+            );
 
-    opacity:.7;
+        });
 
-    margin-bottom:16px;
+        btn.classList.add(
+            "active"
+        );
 
-    font-size:14px;
+        document
+        .querySelectorAll(".page")
+        .forEach(page => {
 
-}
+            page.classList.remove(
+                "active-page"
+            );
 
-/* ======================================
-   CARD BUTTONS
-====================================== */
+        });
 
-.card-actions{
+        const pageName =
+        btn.dataset.page;
 
-    display:flex;
+        const page =
+        document.getElementById(
+            pageName + "Page"
+        );
 
-    gap:10px;
+        if (page) {
 
-}
+            page.classList.add(
+                "active-page"
+            );
 
-.card-actions button{
+        }
 
-    flex:1;
+    });
 
-    border:none;
+});
 
-    border-radius:10px;
-
-    padding:10px;
-
-    cursor:pointer;
-
-}
-
-.play-btn{
-
-    background:
-    var(--accent);
-
-    color:white;
-
-}
-
-.favorite-btn{
-
-    background:
-    var(--panel);
-
-    color:var(--text);
-
-}
-
-/* ======================================
-   FAVORITES / RECENTS
-====================================== */
-
-#favoritesContainer,
-#recentContainer{
-
-    margin-top:15px;
-
-}
-
-/* ======================================
-   PLAYER
-====================================== */
-
-#playerOverlay{
-
-    display:none;
-
-    position:fixed;
-
-    inset:0;
-
-    background:black;
-
-    z-index:9999;
-
-}
-
-.player-top{
-
-    position:absolute;
-
-    top:10px;
-
-    left:10px;
-
-    z-index:10000;
-
-    display:flex;
-
-    gap:10px;
-
-}
-
-.player-top button{
-
-    border:none;
-
-    padding:10px 14px;
-
-    border-radius:10px;
-
-    cursor:pointer;
-
-    background:
-    rgba(
-        255,
-        255,
-        255,
-        .15
-    );
-
-    color:white;
-
-}
-
-#gameFrame{
-
-    width:100%;
-
-    height:100%;
-
-    border:none;
-
-}
-
-/* ======================================
-   SETTINGS
-====================================== */
-
-.settings-card{
-
-    background:
-    var(--card);
-
-    border-radius:20px;
-
-    padding:20px;
-
-    max-width:400px;
-
-}
-
-/* ======================================
-   SCROLLBAR
-====================================== */
-
-::-webkit-scrollbar{
-
-    width:10px;
-
-}
-
-::-webkit-scrollbar-thumb{
-
-    background:
-    var(--accent);
-
-    border-radius:999px;
-
-}
-
-/* ======================================
-   MOBILE
-====================================== */
-
-@media (max-width:900px){
-
-    body{
-
-        flex-direction:column;
-
-    }
-
-    .sidebar{
-
-        width:100%;
-
-        min-height:auto;
-
-    }
-
-    main{
-
-        padding:20px;
-
-    }
-
-}
-
-@media (max-width:600px){
-
-    .games-grid,
-    .featured-grid{
-
-        grid-template-columns:
-        1fr;
-
-    }
-
-}
+// ======================================
+// END
+// ======================================
