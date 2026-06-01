@@ -1,6 +1,5 @@
 // ======================================
 // HORIZON
-// Main Script
 // ======================================
 
 const gamesContainer =
@@ -27,12 +26,6 @@ document.getElementById("gameFrame");
 const playerOverlay =
 document.getElementById("playerOverlay");
 
-const fullscreenBtn =
-document.getElementById("fullscreenBtn");
-
-const closePlayer =
-document.getElementById("closePlayer");
-
 // ======================================
 // STORAGE
 // ======================================
@@ -47,30 +40,19 @@ let recent =
 JSON.parse(localStorage.getItem("recent"))
 || [];
 
-let requests =
-JSON.parse(localStorage.getItem("requests"))
-|| [];
-
-let customGames =
-JSON.parse(localStorage.getItem("customGames"))
-|| [];
-
 // ======================================
 // LOAD GAMES
 // ======================================
 
-async function loadGames() {
+async function loadGames(){
 
-    try {
+    try{
 
         const response =
         await fetch("games.json");
 
-        const data =
-        await response.json();
-
         games =
-        [...data, ...customGames];
+        await response.json();
 
         renderGames(games);
 
@@ -82,11 +64,9 @@ async function loadGames() {
 
         renderRecent();
 
-        renderAdmin();
-
     }
 
-    catch(error) {
+    catch(error){
 
         console.error(error);
 
@@ -97,7 +77,7 @@ async function loadGames() {
 loadGames();
 
 // ======================================
-// GAME CARD
+// CREATE CARD
 // ======================================
 
 function createGameCard(game){
@@ -110,8 +90,6 @@ function createGameCard(game){
 
     card.innerHTML = `
 
-        <img src="${game.thumbnail}">
-
         <div class="game-info">
 
             <h4>${game.name}</h4>
@@ -122,14 +100,12 @@ function createGameCard(game){
 
             <div class="card-actions">
 
-                <button
-                    class="play-btn">
+                <button class="play-btn">
                     Play
                 </button>
 
-                <button
-                    class="favorite-btn">
-                    ⭐
+                <button class="favorite-btn">
+                    ★
                 </button>
 
             </div>
@@ -138,17 +114,19 @@ function createGameCard(game){
 
     `;
 
-    const playBtn =
-    card.querySelector(".play-btn");
+    card
+    .querySelector(".play-btn")
+    .onclick = (e) => {
 
-    playBtn.onclick =
-    () => launchGame(game);
+        e.stopPropagation();
 
-    const favBtn =
-    card.querySelector(".favorite-btn");
+        launchGame(game);
 
-    favBtn.onclick =
-    (e) => {
+    };
+
+    card
+    .querySelector(".favorite-btn")
+    .onclick = (e) => {
 
         e.stopPropagation();
 
@@ -167,14 +145,17 @@ function createGameCard(game){
 // RENDER GAMES
 // ======================================
 
-function renderGames(gameList){
+function renderGames(list){
 
-    gamesContainer.innerHTML = "";
+    gamesContainer.innerHTML =
+    "";
 
-    gameList.forEach(game => {
+    list.forEach(game => {
 
         gamesContainer.appendChild(
+
             createGameCard(game)
+
         );
 
     });
@@ -187,14 +168,19 @@ function renderGames(gameList){
 
 function renderFeatured(){
 
-    featuredContainer.innerHTML = "";
+    if(!featuredContainer) return;
+
+    featuredContainer.innerHTML =
+    "";
 
     games
     .slice(0,4)
     .forEach(game => {
 
         featuredContainer.appendChild(
+
             createGameCard(game)
+
         );
 
     });
@@ -209,14 +195,18 @@ function toggleFavorite(game){
 
     const exists =
     favorites.find(
+
         g => g.name === game.name
+
     );
 
     if(exists){
 
         favorites =
         favorites.filter(
+
             g => g.name !== game.name
+
         );
 
     }
@@ -228,8 +218,11 @@ function toggleFavorite(game){
     }
 
     localStorage.setItem(
+
         "favorites",
+
         JSON.stringify(favorites)
+
     );
 
     renderFavorites();
@@ -238,12 +231,17 @@ function toggleFavorite(game){
 
 function renderFavorites(){
 
-    favoritesContainer.innerHTML = "";
+    if(!favoritesContainer) return;
+
+    favoritesContainer.innerHTML =
+    "";
 
     favorites.forEach(game => {
 
         favoritesContainer.appendChild(
+
             createGameCard(game)
+
         );
 
     });
@@ -258,17 +256,22 @@ function addRecent(game){
 
     recent =
     recent.filter(
+
         g => g.name !== game.name
+
     );
 
     recent.unshift(game);
 
     recent =
-    recent.slice(0,20);
+    recent.slice(0,15);
 
     localStorage.setItem(
+
         "recent",
+
         JSON.stringify(recent)
+
     );
 
     renderRecent();
@@ -277,12 +280,17 @@ function addRecent(game){
 
 function renderRecent(){
 
-    recentContainer.innerHTML = "";
+    if(!recentContainer) return;
+
+    recentContainer.innerHTML =
+    "";
 
     recent.forEach(game => {
 
         recentContainer.appendChild(
+
             createGameCard(game)
+
         );
 
     });
@@ -295,6 +303,16 @@ function renderRecent(){
 
 function launchGame(game){
 
+    if(!game.url){
+
+        alert(
+            "No URL set for this game yet."
+        );
+
+        return;
+
+    }
+
     gameFrame.src =
     game.url;
 
@@ -305,62 +323,69 @@ function launchGame(game){
 
 }
 
-closePlayer.onclick =
-() => {
-
-    gameFrame.src = "";
-
-    playerOverlay.style.display =
-    "none";
-
-};
-
 // ======================================
-// FULLSCREEN
+// CLOSE PLAYER
 // ======================================
 
-fullscreenBtn.onclick =
-() => {
+const closeBtn =
+document.getElementById("closePlayer");
 
-    if(gameFrame.requestFullscreen){
+if(closeBtn){
 
-        gameFrame.requestFullscreen();
+    closeBtn.onclick = () => {
 
-    }
+        playerOverlay.style.display =
+        "none";
 
-};
+        gameFrame.src =
+        "";
+
+    };
+
+}
 
 // ======================================
 // SEARCH
 // ======================================
 
-searchInput.addEventListener(
-    "input",
-    () => {
+if(searchInput){
 
-        const value =
-        searchInput.value
-        .toLowerCase();
+    searchInput.addEventListener(
 
-        const filtered =
-        games.filter(game =>
+        "input",
 
-            game.name
-            .toLowerCase()
-            .includes(value)
+        () => {
 
-        );
+            const value =
+            searchInput.value
+            .toLowerCase();
 
-        renderGames(filtered);
+            renderGames(
 
-    }
-);
+                games.filter(game =>
+
+                    game.name
+                    .toLowerCase()
+                    .includes(value)
+
+                )
+
+            );
+
+        }
+
+    );
+
+}
 
 // ======================================
 // CATEGORIES
 // ======================================
 
 function buildCategories(){
+
+    if(!categoriesContainer)
+    return;
 
     categoriesContainer.innerHTML =
     "";
@@ -370,7 +395,8 @@ function buildCategories(){
     [...new Set(
 
         games.map(
-            g => g.category
+            game =>
+            game.category
         )
 
     )];
@@ -408,9 +434,11 @@ function buildCategories(){
             renderGames(
 
                 games.filter(
-                    g =>
-                    g.category
+
+                    game =>
+                    game.category
                     === category
+
                 )
 
             );
@@ -426,7 +454,33 @@ function buildCategories(){
 }
 
 // ======================================
-// PAGE NAVIGATION
+// FULLSCREEN
+// ======================================
+
+const fullscreenBtn =
+document.getElementById(
+    "fullscreenBtn"
+);
+
+if(fullscreenBtn){
+
+    fullscreenBtn.onclick =
+    () => {
+
+        if(
+            gameFrame.requestFullscreen
+        ){
+
+            gameFrame.requestFullscreen();
+
+        }
+
+    };
+
+}
+
+// ======================================
+// NAVIGATION
 // ======================================
 
 document
@@ -434,14 +488,19 @@ document
 .forEach(btn => {
 
     btn.addEventListener(
+
         "click",
+
         () => {
 
             document
             .querySelectorAll(".nav-btn")
             .forEach(
-                b =>
-                b.classList.remove("active")
+
+                b => b.classList.remove(
+                    "active"
+                )
+
             );
 
             btn.classList.add(
@@ -451,322 +510,38 @@ document
             document
             .querySelectorAll(".page")
             .forEach(
+
                 page =>
                 page.classList.remove(
                     "active-page"
                 )
+
             );
 
-            const target =
+            const pageName =
             btn.dataset.page;
 
-            document
-            .getElementById(
-                target + "Page"
-            )
-            .classList.add(
-                "active-page"
+            const target =
+            document.getElementById(
+
+                pageName +
+                "Page"
+
             );
 
+            if(target){
+
+                target.classList.add(
+                    "active-page"
+                );
+
+            }
+
         }
+
     );
 
 });
-
-// ======================================
-// THEMES
-// ======================================
-
-const themeSelect =
-document.getElementById(
-    "themeSelect"
-);
-
-const themeToggle =
-document.getElementById(
-    "themeToggle"
-);
-
-function applyTheme(theme){
-
-    document.body.classList.remove(
-        "light",
-        "midnight"
-    );
-
-    if(theme !== "dark"){
-
-        document.body.classList.add(
-            theme
-        );
-
-    }
-
-    localStorage.setItem(
-        "theme",
-        theme
-    );
-
-}
-
-const savedTheme =
-localStorage.getItem("theme")
-|| "dark";
-
-themeSelect.value =
-savedTheme;
-
-applyTheme(savedTheme);
-
-themeSelect.onchange =
-() => {
-
-    applyTheme(
-        themeSelect.value
-    );
-
-};
-
-themeToggle.onclick =
-() => {
-
-    const current =
-    localStorage.getItem("theme")
-    || "dark";
-
-    if(current === "dark"){
-
-        applyTheme("light");
-
-        themeSelect.value =
-        "light";
-
-    }
-
-    else{
-
-        applyTheme("dark");
-
-        themeSelect.value =
-        "dark";
-
-    }
-
-};
-
-// ======================================
-// REQUESTS
-// ======================================
-
-const requestForm =
-document.getElementById(
-    "requestForm"
-);
-
-const requestList =
-document.getElementById(
-    "requestList"
-);
-
-function renderRequests(){
-
-    requestList.innerHTML =
-    "";
-
-    requests.forEach(req => {
-
-        const card =
-        document.createElement("div");
-
-        card.className =
-        "request-card";
-
-        card.innerHTML = `
-
-            <strong>
-                ${req.name}
-            </strong>
-
-            <p>
-                ${req.reason}
-            </p>
-
-        `;
-
-        requestList.appendChild(
-            card
-        );
-
-    });
-
-}
-
-requestForm.addEventListener(
-    "submit",
-    e => {
-
-        e.preventDefault();
-
-        const name =
-        document.getElementById(
-            "requestName"
-        ).value;
-
-        const reason =
-        document.getElementById(
-            "requestReason"
-        ).value;
-
-        requests.push({
-
-            name,
-            reason
-
-        });
-
-        localStorage.setItem(
-
-            "requests",
-
-            JSON.stringify(
-                requests
-            )
-
-        );
-
-        renderRequests();
-
-        requestForm.reset();
-
-    }
-);
-
-renderRequests();
-
-// ======================================
-// ADMIN PANEL
-// ======================================
-
-const adminForm =
-document.getElementById(
-    "adminForm"
-);
-
-const adminGames =
-document.getElementById(
-    "adminGames"
-);
-
-function renderAdmin(){
-
-    adminGames.innerHTML =
-    "";
-
-    customGames.forEach(
-        (game,index) => {
-
-        const card =
-        document.createElement("div");
-
-        card.className =
-        "admin-card";
-
-        card.innerHTML = `
-
-            <span>
-                ${game.name}
-            </span>
-
-            <button
-                class="delete-btn">
-                Delete
-            </button>
-
-        `;
-
-        card
-        .querySelector(
-            ".delete-btn"
-        )
-        .onclick = () => {
-
-            customGames.splice(
-                index,
-                1
-            );
-
-            localStorage.setItem(
-
-                "customGames",
-
-                JSON.stringify(
-                    customGames
-                )
-
-            );
-
-            location.reload();
-
-        };
-
-        adminGames.appendChild(
-            card
-        );
-
-    });
-
-}
-
-adminForm.addEventListener(
-    "submit",
-    e => {
-
-        e.preventDefault();
-
-        const game = {
-
-            name:
-            document
-            .getElementById(
-                "gameName"
-            ).value,
-
-            category:
-            document
-            .getElementById(
-                "gameCategory"
-            ).value,
-
-            thumbnail:
-            document
-            .getElementById(
-                "gameImage"
-            ).value,
-
-            url:
-            document
-            .getElementById(
-                "gameUrl"
-            ).value
-
-        };
-
-        customGames.push(game);
-
-        localStorage.setItem(
-
-            "customGames",
-
-            JSON.stringify(
-                customGames
-            )
-
-        );
-
-        location.reload();
-
-    }
-);
 
 // ======================================
 // END
