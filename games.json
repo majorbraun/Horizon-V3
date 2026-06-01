@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Slope",
+    "category": "Arcade",
+    "thumbnail": "https://picsum.photos/400/250?random=1",
+    "url": "https://example.com"
+  },
+  {
+    "name": "Retro Racer",
+    "category": "Racing",
+    "thumbnail": "https://picsum.photos/400/250?random=2",
+    "url": "https://example.com"
+  },
+  {
+    "name": "Pixel Adventure",
+    "category": "Adventure",
+    "thumbnail": "https://picsum.photos/400/250?random=3",
+    "url": "https://example.com"
+  },
+  {
+    "name": "Block Builder",
+    "category": "Sandbox",
+    "thumbnail": "https://picsum.photos/400/250?random=4",
+    "url": "https://example.com"
+  },
+  {
+    "name": "Galaxy Defender",
+    "category": "Shooter",
+    "thumbnail": "https://picsum.photos/400/250?random=5",
+    "url": "https://example.com"
+  },
+  {
+    "name": "Speed Drift",
+    "category": "Racing",
+    "thumbnail": "https://picsum.photos/400/250?random=6",
+    "url": "https://example.com"
+  },
+  {
+    "name": "Chess Master",
+    "category": "Strategy",
+    "thumbnail": "https://picsum.photos/400/250?random=7",
+    "url": "https://example.com"
+  },
+  {
+    "name": "Sky Jump",
+    "category": "Arcade",
+    "thumbnail": "https://picsum.photos/400/250?random=8",
+    "url": "https://example.com"
+  },
+  {
+    "name": "Dungeon Quest",
+    "category": "RPG",
+    "thumbnail": "https://picsum.photos/400/250?random=9",
+    "url": "https://example.com"
+  },
+  {
+    "name": "Ultimate Soccer",
+    "category": "Sports",
+    "thumbnail": "https://picsum.photos/400/250?random=10",
+    "url": "https://example.com"
+  },
+  {
+    "name": "Basketball Stars",
+    "category": "Sports",
+    "thumbnail": "https://picsum.photos/400/250?random=11",
+    "url": "https://example.com"
+  },
+  {
+    "name": "Zombie Survival",
+    "category": "Action",
+    "thumbnail": "https://picsum.photos/400/250?random=12",
+    "url": "https://example.com"
+  }
+]
