@@ -1,548 +1,532 @@
-// ======================================
-// HORIZON
-// ======================================
+/* ======================================
+   HORIZON
+====================================== */
 
-const gamesContainer =
-document.getElementById("gamesContainer");
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-const featuredContainer =
-document.getElementById("featuredGames");
+:root{
 
-const favoritesContainer =
-document.getElementById("favoritesContainer");
+    --bg:#08111f;
+    --panel:#111827;
+    --card:#172033;
 
-const recentContainer =
-document.getElementById("recentContainer");
+    --text:#ffffff;
+    --accent:#4da3ff;
 
-const categoriesContainer =
-document.getElementById("categories");
-
-const searchInput =
-document.getElementById("search");
-
-const gameFrame =
-document.getElementById("gameFrame");
-
-const playerOverlay =
-document.getElementById("playerOverlay");
-
-// ======================================
-// STORAGE
-// ======================================
-
-let games = [];
-
-let favorites =
-JSON.parse(localStorage.getItem("favorites"))
-|| [];
-
-let recent =
-JSON.parse(localStorage.getItem("recent"))
-|| [];
-
-// ======================================
-// LOAD GAMES
-// ======================================
-
-async function loadGames(){
-
-    try{
-
-        const response =
-        await fetch("games.json");
-
-        games =
-        await response.json();
-
-        renderGames(games);
-
-        renderFeatured();
-
-        buildCategories();
-
-        renderFavorites();
-
-        renderRecent();
-
-    }
-
-    catch(error){
-
-        console.error(error);
-
-    }
+    --border:
+    rgba(255,255,255,.08);
 
 }
 
-loadGames();
+/* ======================================
+   LIGHT MODE
+====================================== */
 
-// ======================================
-// CREATE CARD
-// ======================================
+body.light{
 
-function createGameCard(game){
+    --bg:#f1f5f9;
+    --panel:#ffffff;
+    --card:#e2e8f0;
 
-    const card =
-    document.createElement("div");
+    --text:#111827;
+    --accent:#2563eb;
 
-    card.className =
-    "game-card";
-
-    card.innerHTML = `
-
-        <div class="game-info">
-
-            <h4>${game.name}</h4>
-
-            <div class="game-category">
-                ${game.category}
-            </div>
-
-            <div class="card-actions">
-
-                <button class="play-btn">
-                    Play
-                </button>
-
-                <button class="favorite-btn">
-                    ★
-                </button>
-
-            </div>
-
-        </div>
-
-    `;
-
-    card
-    .querySelector(".play-btn")
-    .onclick = (e) => {
-
-        e.stopPropagation();
-
-        launchGame(game);
-
-    };
-
-    card
-    .querySelector(".favorite-btn")
-    .onclick = (e) => {
-
-        e.stopPropagation();
-
-        toggleFavorite(game);
-
-    };
-
-    card.onclick =
-    () => launchGame(game);
-
-    return card;
+    --border:
+    rgba(0,0,0,.08);
 
 }
 
-// ======================================
-// RENDER GAMES
-// ======================================
+/* ======================================
+   BODY
+====================================== */
 
-function renderGames(list){
+body{
 
-    gamesContainer.innerHTML =
-    "";
+    background:var(--bg);
 
-    list.forEach(game => {
+    color:var(--text);
 
-        gamesContainer.appendChild(
+    font-family:
+    Inter,
+    Arial,
+    sans-serif;
 
-            createGameCard(game)
+    min-height:100vh;
 
-        );
-
-    });
-
-}
-
-// ======================================
-// FEATURED
-// ======================================
-
-function renderFeatured(){
-
-    if(!featuredContainer) return;
-
-    featuredContainer.innerHTML =
-    "";
-
-    games
-    .slice(0,4)
-    .forEach(game => {
-
-        featuredContainer.appendChild(
-
-            createGameCard(game)
-
-        );
-
-    });
+    display:flex;
 
 }
 
-// ======================================
-// FAVORITES
-// ======================================
+/* ======================================
+   SIDEBAR
+====================================== */
 
-function toggleFavorite(game){
+.sidebar{
 
-    const exists =
-    favorites.find(
+    width:240px;
 
-        g => g.name === game.name
+    min-height:100vh;
 
-    );
+    padding:25px;
 
-    if(exists){
+    background:
+    rgba(255,255,255,.03);
 
-        favorites =
-        favorites.filter(
+    backdrop-filter:
+    blur(20px);
 
-            g => g.name !== game.name
-
-        );
-
-    }
-
-    else{
-
-        favorites.push(game);
-
-    }
-
-    localStorage.setItem(
-
-        "favorites",
-
-        JSON.stringify(favorites)
-
-    );
-
-    renderFavorites();
+    border-right:
+    1px solid var(--border);
 
 }
 
-function renderFavorites(){
+.logo{
 
-    if(!favoritesContainer) return;
-
-    favoritesContainer.innerHTML =
-    "";
-
-    favorites.forEach(game => {
-
-        favoritesContainer.appendChild(
-
-            createGameCard(game)
-
-        );
-
-    });
+    margin-bottom:30px;
 
 }
 
-// ======================================
-// RECENT
-// ======================================
+.logo h1{
 
-function addRecent(game){
+    color:var(--accent);
 
-    recent =
-    recent.filter(
+    font-size:30px;
 
-        g => g.name !== game.name
-
-    );
-
-    recent.unshift(game);
-
-    recent =
-    recent.slice(0,15);
-
-    localStorage.setItem(
-
-        "recent",
-
-        JSON.stringify(recent)
-
-    );
-
-    renderRecent();
+    letter-spacing:2px;
 
 }
 
-function renderRecent(){
+/* ======================================
+   NAVIGATION
+====================================== */
 
-    if(!recentContainer) return;
+.nav-btn{
 
-    recentContainer.innerHTML =
-    "";
+    width:100%;
 
-    recent.forEach(game => {
+    margin-bottom:10px;
 
-        recentContainer.appendChild(
+    border:none;
 
-            createGameCard(game)
+    padding:14px;
 
-        );
+    cursor:pointer;
 
-    });
+    border-radius:14px;
 
-}
+    background:var(--panel);
 
-// ======================================
-// LAUNCH GAME
-// ======================================
+    color:var(--text);
 
-function launchGame(game){
-
-    if(!game.url){
-
-        alert(
-            "No URL set for this game yet."
-        );
-
-        return;
-
-    }
-
-    gameFrame.src =
-    game.url;
-
-    playerOverlay.style.display =
-    "block";
-
-    addRecent(game);
+    transition:.25s;
 
 }
 
-// ======================================
-// CLOSE PLAYER
-// ======================================
+.nav-btn:hover{
 
-const closeBtn =
-document.getElementById("closePlayer");
-
-if(closeBtn){
-
-    closeBtn.onclick = () => {
-
-        playerOverlay.style.display =
-        "none";
-
-        gameFrame.src =
-        "";
-
-    };
+    transform:
+    translateY(-2px);
 
 }
 
-// ======================================
-// SEARCH
-// ======================================
+.nav-btn.active{
 
-if(searchInput){
+    background:
+    var(--accent);
 
-    searchInput.addEventListener(
-
-        "input",
-
-        () => {
-
-            const value =
-            searchInput.value
-            .toLowerCase();
-
-            renderGames(
-
-                games.filter(game =>
-
-                    game.name
-                    .toLowerCase()
-                    .includes(value)
-
-                )
-
-            );
-
-        }
-
-    );
+    color:white;
 
 }
 
-// ======================================
-// CATEGORIES
-// ======================================
+/* ======================================
+   MAIN
+====================================== */
 
-function buildCategories(){
+main{
 
-    if(!categoriesContainer)
-    return;
+    flex:1;
 
-    categoriesContainer.innerHTML =
-    "";
+    padding:30px;
 
-    const categories =
+}
 
-    [...new Set(
+/* ======================================
+   HEADER
+====================================== */
 
-        games.map(
-            game =>
-            game.category
+header{
+
+    margin-bottom:30px;
+
+}
+
+#search{
+
+    width:100%;
+
+    padding:16px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:
+    var(--panel);
+
+    color:var(--text);
+
+    font-size:16px;
+
+}
+
+/* ======================================
+   PAGE SYSTEM
+====================================== */
+
+.page{
+
+    display:none;
+
+}
+
+.active-page{
+
+    display:block;
+
+}
+
+/* ======================================
+   SECTION TITLES
+====================================== */
+
+h2{
+
+    margin-bottom:20px;
+
+}
+
+h3{
+
+    margin-bottom:15px;
+
+}
+
+/* ======================================
+   CATEGORIES
+====================================== */
+
+#categories{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    margin-bottom:25px;
+
+}
+
+.category-btn{
+
+    border:none;
+
+    padding:10px 16px;
+
+    border-radius:999px;
+
+    background:
+    var(--panel);
+
+    color:var(--text);
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.category-btn:hover{
+
+    background:
+    var(--accent);
+
+    color:white;
+
+}
+
+/* ======================================
+   GAME GRID
+====================================== */
+
+.games-grid,
+.featured-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(
+        auto-fill,
+        minmax(
+            250px,
+            1fr
         )
-
-    )];
-
-    const allBtn =
-    document.createElement("button");
-
-    allBtn.className =
-    "category-btn";
-
-    allBtn.textContent =
-    "All";
-
-    allBtn.onclick =
-    () => renderGames(games);
-
-    categoriesContainer.appendChild(
-        allBtn
     );
 
-    categories.forEach(category => {
-
-        const btn =
-        document.createElement("button");
-
-        btn.className =
-        "category-btn";
-
-        btn.textContent =
-        category;
-
-        btn.onclick =
-        () => {
-
-            renderGames(
-
-                games.filter(
-
-                    game =>
-                    game.category
-                    === category
-
-                )
-
-            );
-
-        };
-
-        categoriesContainer.appendChild(
-            btn
-        );
-
-    });
+    gap:20px;
 
 }
 
-// ======================================
-// FULLSCREEN
-// ======================================
+/* ======================================
+   GAME CARD
+====================================== */
 
-const fullscreenBtn =
-document.getElementById(
-    "fullscreenBtn"
-);
+.game-card{
 
-if(fullscreenBtn){
+    background:
+    var(--card);
 
-    fullscreenBtn.onclick =
-    () => {
+    border:
+    1px solid var(--border);
 
-        if(
-            gameFrame.requestFullscreen
-        ){
+    border-radius:20px;
 
-            gameFrame.requestFullscreen();
+    transition:.25s;
 
-        }
+    cursor:pointer;
 
-    };
+    min-height:150px;
 
 }
 
-// ======================================
-// NAVIGATION
-// ======================================
+.game-card:hover{
 
-document
-.querySelectorAll(".nav-btn")
-.forEach(btn => {
+    transform:
+    translateY(-5px);
 
-    btn.addEventListener(
+}
 
-        "click",
+.game-info{
 
-        () => {
+    padding:20px;
 
-            document
-            .querySelectorAll(".nav-btn")
-            .forEach(
+}
 
-                b => b.classList.remove(
-                    "active"
-                )
+.game-info h4{
 
-            );
+    font-size:18px;
 
-            btn.classList.add(
-                "active"
-            );
+    margin-bottom:10px;
 
-            document
-            .querySelectorAll(".page")
-            .forEach(
+}
 
-                page =>
-                page.classList.remove(
-                    "active-page"
-                )
+.game-category{
 
-            );
+    opacity:.7;
 
-            const pageName =
-            btn.dataset.page;
+    margin-bottom:16px;
 
-            const target =
-            document.getElementById(
+    font-size:14px;
 
-                pageName +
-                "Page"
+}
 
-            );
+/* ======================================
+   CARD BUTTONS
+====================================== */
 
-            if(target){
+.card-actions{
 
-                target.classList.add(
-                    "active-page"
-                );
+    display:flex;
 
-            }
+    gap:10px;
 
-        }
+}
 
+.card-actions button{
+
+    flex:1;
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:10px;
+
+    cursor:pointer;
+
+}
+
+.play-btn{
+
+    background:
+    var(--accent);
+
+    color:white;
+
+}
+
+.favorite-btn{
+
+    background:
+    var(--panel);
+
+    color:var(--text);
+
+}
+
+/* ======================================
+   FAVORITES / RECENTS
+====================================== */
+
+#favoritesContainer,
+#recentContainer{
+
+    margin-top:15px;
+
+}
+
+/* ======================================
+   PLAYER
+====================================== */
+
+#playerOverlay{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:black;
+
+    z-index:9999;
+
+}
+
+.player-top{
+
+    position:absolute;
+
+    top:10px;
+
+    left:10px;
+
+    z-index:10000;
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+.player-top button{
+
+    border:none;
+
+    padding:10px 14px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    background:
+    rgba(
+        255,
+        255,
+        255,
+        .15
     );
 
-});
+    color:white;
 
-// ======================================
-// END
-// ======================================
+}
+
+#gameFrame{
+
+    width:100%;
+
+    height:100%;
+
+    border:none;
+
+}
+
+/* ======================================
+   SETTINGS
+====================================== */
+
+.settings-card{
+
+    background:
+    var(--card);
+
+    border-radius:20px;
+
+    padding:20px;
+
+    max-width:400px;
+
+}
+
+/* ======================================
+   SCROLLBAR
+====================================== */
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:
+    var(--accent);
+
+    border-radius:999px;
+
+}
+
+/* ======================================
+   MOBILE
+====================================== */
+
+@media (max-width:900px){
+
+    body{
+
+        flex-direction:column;
+
+    }
+
+    .sidebar{
+
+        width:100%;
+
+        min-height:auto;
+
+    }
+
+    main{
+
+        padding:20px;
+
+    }
+
+}
+
+@media (max-width:600px){
+
+    .games-grid,
+    .featured-grid{
+
+        grid-template-columns:
+        1fr;
+
+    }
+
+}
